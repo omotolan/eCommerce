@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,10 @@ public class Product {
     private BigDecimal price;
     private String description;
     private String image;
+    private int quantity;
+    private LocalDateTime dateCreated = LocalDateTime.now();
     @DBRef
     private List<Review> reviews = new ArrayList<>();
-    private String categoryId;
+    private String categoryName;
 
 }

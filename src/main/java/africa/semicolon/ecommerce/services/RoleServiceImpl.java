@@ -1,0 +1,36 @@
+package africa.semicolon.ecommerce.services;
+
+import africa.semicolon.ecommerce.data.model.Role;
+import africa.semicolon.ecommerce.data.repositories.RoleRepository;
+import africa.semicolon.ecommerce.exceptions.RoleException;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@AllArgsConstructor
+public class RoleServiceImpl implements RoleService {
+
+    private final RoleRepository roleRepository;
+
+    @Override
+    public void createRole(Role role) {
+        roleRepository.save(role);
+    }
+
+    @Override
+    public Role getRoleByName(String name) throws RoleException {
+        Optional<Role> optionalRole = roleRepository.findByName(name);
+        if (optionalRole.isEmpty()) {
+            throw new RoleException("Role does not exist");
+        }
+        return optionalRole.get();
+    }
+
+    @Override
+    public List<Role> getAllRole() {
+        return roleRepository.findAll();
+    }
+}
