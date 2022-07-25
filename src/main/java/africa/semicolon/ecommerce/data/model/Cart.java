@@ -1,6 +1,7 @@
 package africa.semicolon.ecommerce.data.model;
 
 import africa.semicolon.ecommerce.exceptions.CartException;
+import africa.semicolon.ecommerce.exceptions.ProductException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,16 +20,17 @@ import java.util.Map;
 public class Cart {
     @Id
     private String id;
-    @DBRef
     private Map<String, Item> items = new HashMap<>();
     private BigDecimal total;
 
-
-    public void addItem(Product product, int quantity) {
+    public void addItem(Product product, int quantity) throws ProductException {
         String productId = product.getId();
         Item item = new Item();
 
         item.setProduct(product);
+//        if (item.getQuantity() > product.getQuantity()){
+//            throw new  IllegalArgumentException("jsdhds");
+//        }
         if (items.containsKey(productId)) {
             items.get(productId).increaseQuantity(quantity);
         } else {

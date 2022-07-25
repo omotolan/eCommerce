@@ -24,7 +24,7 @@ class ProductServiceImplTest {
     private ProductService productService;
 
     @Test
-    public void testThatProductCanBeAdded() {
+    public void testThatProductCanBeAdded() throws ProductException {
         ProductDto productDto = ProductDto.builder()
                 .name("Iphone 13")
                 .categoryName("Phone")

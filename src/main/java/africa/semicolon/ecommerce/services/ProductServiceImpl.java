@@ -23,10 +23,15 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     @Override
-    public Response addProduct(ProductDto productDto) {
-        Product product = ProductDto.unPackDto(productDto);
-        productRepository.save(product);
+    public Response addProduct(ProductDto productDto) throws ProductException {
+        Product product = productRepository.findByName(productDto.getName());
 
+        if (product != null) {
+            throw new ProductException("Product already exists");
+        }
+
+        product = ProductDto.unPackDto(productDto);
+        productRepository.save(product);
         log.info("new product added");
         return new Response(product.getName() + " successfully added to " + product.getCategoryName()
                 + " Category");
@@ -94,6 +99,15 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductException("Product does not exist");
         }
         return product.get();
+    }
+    @Override
+    public Product findProductByName(String productName) throws ProductException {
+        Product product = productRepository.findByName(productName);
+        if (product == null) {
+            throw new ProductException("Product does not exist");
+        }
+        return product;
+
     }
 
     @Override

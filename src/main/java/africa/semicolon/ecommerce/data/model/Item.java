@@ -12,14 +12,22 @@ import java.math.BigDecimal;
 public class Item {
     private Product product;
     private int quantity = 1;
-    private BigDecimal itemTotal;
+    private BigDecimal itemTotal = BigDecimal.ZERO;
+    // TODO: clear initialization error
 
-    public void increaseQuantity(int quantity){
+    public void increaseQuantity(int quantity) {
         this.quantity += quantity;
-        itemTotal = product.getPrice().multiply(BigDecimal.valueOf(this.quantity));
+        calculateTotal();
+
     }
-    public void decreaseQuantity(int quantity){
+    private void calculateTotal() {
+        BigDecimal total;
+        total = product.getPrice().multiply(BigDecimal.valueOf(this.quantity));
+        this.itemTotal = total;
+    }
+
+    public void decreaseQuantity(int quantity) {
         this.quantity -= quantity;
-        itemTotal = product.getPrice().multiply(BigDecimal.valueOf(this.quantity));
+        calculateTotal();
     }
 }

@@ -9,7 +9,7 @@ import africa.semicolon.ecommerce.exceptions.ProductException;
 import java.util.List;
 
 public interface ProductService {
-    Response addProduct(ProductDto productDto);
+    Response addProduct(ProductDto productDto) throws ProductException;
 
     Response deleteProductById(String id) throws ProductException;
 
@@ -20,6 +20,8 @@ public interface ProductService {
     Response updateProduct(String id, UpdateProductDto updateProductDto);
 
     Product findProduct(String id) throws ProductException;
+
+    Product findProductByName(String productName) throws ProductException;
 
     List<ProductDto> getAllProductsInACategory(String categoryName) throws ProductException;
 }
