@@ -1,125 +1,138 @@
 package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Product;
+import africa.semicolon.ecommerce.data.model.Review;
 import africa.semicolon.ecommerce.data.repositories.ProductRepository;
-import africa.semicolon.ecommerce.dto.ProductDto;
-import africa.semicolon.ecommerce.dto.Response;
-import africa.semicolon.ecommerce.dto.UpdateProductDto;
-import africa.semicolon.ecommerce.exceptions.ProductException;
+import africa.semicolon.ecommerce.dto.*;
+import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
+    private ModelMapper modelMapper;
 
     @Override
-    public Response addProduct(ProductDto productDto) throws ProductException {
-        Product product = productRepository.findByName(productDto.getName());
+    public AddProductResponse addProduct(AddProductRequest addProductRequest) {
 
-        if (product != null) {
-            throw new ProductException("Product already exists");
-        }
+        Product product = modelMapper.map(addProductRequest, Product.class);
 
-        product = ProductDto.unPackDto(productDto);
-        productRepository.save(product);
-        log.info("new product added");
-        return new Response(product.getName() + " successfully added to " + product.getCategoryName()
-                + " Category");
+        Product savedProduct = productRepository.save(product);
+        log.info("product added {}", savedProduct.getName());
+        ProductDto productDto = modelMapper.map(savedProduct, ProductDto.class);
+
+        return new AddProductResponse(productDto, savedProduct.getName() + " successfully added");
     }
 
     @Override
-    public Response deleteProductById(String id) throws ProductException {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty()) {
-            throw new ProductException("Product does not exist");
-        }
-        String productName = product.get().getName();
-        productRepository.delete(product.get());
+    public Response deleteProductById(Long id) throws ProductNotFoundException {
+        Product product = findByIdInternal(id);
+
+        productRepository.delete(product);
 
         log.info("product with id: " + id + " deleted");
-        return new Response(productName + " successfully deleted");
+        return new Response(product.getName() + " successfully deleted");
+    }
+
+    private Product findByIdInternal(Long id) throws ProductNotFoundException {
+        Optional<Product> foundProduct = productRepository.findById(id);
+        if (foundProduct.isEmpty()) {
+            throw new ProductNotFoundException("Product does not exist");
+        }
+        return foundProduct.get();
     }
 
     @Override
-    public ProductDto getProductById(String id) throws ProductException {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty()) {
-            throw new ProductException("Product does not exist");
-        }
-        return ProductDto.packDto(product.get());
+    public ProductDto getProductById(Long id) throws ProductNotFoundException {
+        return ProductDto.packDto(findByIdInternal(id));
     }
 
-    @Override
-    public List<ProductDto> getAllProduct() {
-        List<ProductDto> productDto = new ArrayList<>();
-        for (Product product : productRepository.findAll()) {
-            productDto.add(ProductDto.packDto(product));
-        }
-
-        return productDto;
-    }
 
     @Override
-    public Response updateProduct(String id, UpdateProductDto updateProductDto) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent() && updateProductDto != null) {
-            if (updateProductDto.getName().length() != 0) {
-                product.get().setName(updateProductDto.getName());
-            } else if (updateProductDto.getImage().length() != 0) {
-                product.get().setImage(updateProductDto.getImage());
-            } else if (updateProductDto.getDescription().length() != 0) {
-                product.get().setDescription(updateProductDto.getDescription());
-            } else if (updateProductDto.getCategoryName().length() != 0) {
-                product.get().setCategoryName(updateProductDto.getCategoryName());
-            } else if (updateProductDto.getQuantity() > 0) {
-                product.get().setQuantity(updateProductDto.getQuantity());
-            } else if (updateProductDto.getPrice().compareTo(new BigDecimal(0)) > 0) {
-                product.get().setPrice(updateProductDto.getPrice());
-            }
+    public ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) throws ProductNotFoundException {
+        Product foundProduct = findByIdInternal(id);
+
+        if (updateProductRequest != null) {
+            foundProduct.setName(updateProductRequest.getName());
+            foundProduct.setImageUrl(updateProductRequest.getImageUrl());
+            foundProduct.setDescription(updateProductRequest.getDescription());
+            foundProduct.setProductCategory(updateProductRequest.getProductCategory());
+            foundProduct.setQuantity(updateProductRequest.getQuantity());
+            foundProduct.setPrice(updateProductRequest.getPrice());
         }
-        product.ifPresent(productRepository::save);
+
+        Product updatedProduct = productRepository.save(foundProduct);
+
         log.info("product with id: " + id + " was updated on: " + LocalDateTime.now());
-        return new Response("Product successfully updated");
+        return new ProductResponse("Product successfully updated", updatedProduct);
     }
 
     @Override
-    public Product findProduct(String id) throws ProductException {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty()) {
-            throw new ProductException("Product does not exist");
-        }
-        return product.get();
-    }
-    @Override
-    public Product findProductByName(String productName) throws ProductException {
-        Product product = productRepository.findByName(productName);
-        if (product == null) {
-            throw new ProductException("Product does not exist");
-        }
-        return product;
+    public Map<String, Object> findProductByName(String name, Pageable pageable) throws ProductNotFoundException {
+        List<Product> products = productRepository.findByName(name);
+
+        return returnProductInPages(products, pageable);
 
     }
 
     @Override
-    public List<ProductDto> getAllProductsInACategory(String categoryName) throws ProductException {
-        List<Product> products = productRepository.findByCategoryName(categoryName.toUpperCase());
-        if (products.isEmpty()) {
-            throw new ProductException("No product in this category");
-        }
-        List<ProductDto> productDtos = new ArrayList<>();
+    public Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException {
+        List<ProductDto> productDtoList = new ArrayList<>();
         for (Product product : products) {
-            productDtos.add(ProductDto.packDto(product));
+            productDtoList.add(ProductDto.packDto(product));
         }
-        return productDtos;
+        System.out.println("this is the size: " + productDtoList.size());
+        Page<ProductDto> page = new PageImpl<>(productDtoList, pageable, products.size());
+        log.info("this is the number: {} ", page.getTotalElements());
+        if (page.getTotalElements() == 0) {
+            throw new ProductNotFoundException("No product");
+        }
+        Map<String, Object> pageResult = new HashMap<>();
+        pageResult.put("totalNumberOfPages", page.getTotalPages());
+        pageResult.put("totalNumberOfElementsInDataBase", page.getTotalElements());
+        if (page.hasNext()) {
+            pageResult.put("nextPage", page.nextPageable());
+        }
+        if (page.hasPrevious()) {
+            pageResult.put("previousPage", page.previousPageable());
+        }
+
+        pageResult.put("product", page.getContent());
+        pageResult.put("numberOfElementInPage", page.getNumberOfElements());
+        log.info("number of elements {}", page.getNumberOfElements());
+        pageResult.put("pageNumber", page.getNumber());
+        pageResult.put("size", page.getSize());
+        return pageResult;
     }
+
+    @Override
+    public String addReview(Long id, String review) throws ProductNotFoundException {
+        Product product = findByIdInternal(id);
+        Review addReview = new Review(review);
+        product.getReviews().add(addReview);
+        productRepository.save(product);
+
+        return "review added";
+
+    }
+
+    @Override
+    public Set<Review> getAllReviews(Long id) throws ProductNotFoundException {
+        Product product = findByIdInternal(id);
+        return product.getReviews();
+
+    }
+
+
 }

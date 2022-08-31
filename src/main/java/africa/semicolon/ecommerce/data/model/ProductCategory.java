@@ -1,20 +1,44 @@
 package africa.semicolon.ecommerce.data.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.*;
+import org.hibernate.annotations.Cascade;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @NoArgsConstructor
-@Data
-@Document("product_categories")
+@Setter
+@Getter
+@Entity
 public class ProductCategory {
+    @Setter(AccessLevel.NONE)
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "productCategory")
+//    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Product> products =new ArrayList<>();
+    @Column(unique = true)
+    @NonNull
     private String name;
-    private LocalDateTime dateCreated = LocalDateTime.now();
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate dateCreated = LocalDate.now();
+
+
+
+    public void addCategory(Product product){
+        this.products.add(product);
+        product.getProductCategory().add(this);
+    }
 }

@@ -1,12 +1,12 @@
 package africa.semicolon.ecommerce.data.repositories;
 
 import africa.semicolon.ecommerce.data.model.Role;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends MongoRepository<Role, String> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByName(String name);
 }

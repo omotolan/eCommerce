@@ -1,6 +1,7 @@
 package africa.semicolon.ecommerce.exceptions;
 
-public class ProductCategoryException extends Exception {
+public class ProductCategoryException extends EcommerceException {
     public ProductCategoryException(String message) {
+        super(message);
     }
 }

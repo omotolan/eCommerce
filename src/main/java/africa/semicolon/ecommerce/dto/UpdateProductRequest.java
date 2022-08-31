@@ -1,20 +1,20 @@
 package africa.semicolon.ecommerce.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import africa.semicolon.ecommerce.data.model.ProductCategory;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
-public class UpdateProductDto {
+public class UpdateProductRequest {
     @NotNull
     @NotBlank(message = "Please enter a product name")
     private String name;
@@ -26,10 +26,10 @@ public class UpdateProductDto {
     private String description;
     @NotNull
     @NotBlank(message = "Please enter a product image")
-    private String image;
+    private String imageUrl;
     @NotNull
     @NotBlank(message = "Please enter a category id")
-    private String categoryName;
+    private List<ProductCategory> productCategory;
     @Min(value = 1, message = "quantity can not be zero")
     private int quantity;
 }

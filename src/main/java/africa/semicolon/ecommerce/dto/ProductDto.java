@@ -1,65 +1,49 @@
 package africa.semicolon.ecommerce.dto;
 
 import africa.semicolon.ecommerce.data.model.Product;
-import africa.semicolon.ecommerce.data.model.Review;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import africa.semicolon.ecommerce.data.model.ProductCategory;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.*;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 public class ProductDto {
-    @NotNull
-    @NotBlank(message = "Please enter a product name")
+
     private String name;
-    @NotNull
-    @NotBlank(message = "Please enter a product price")
+
     private BigDecimal price;
-    @NotNull
-    @NotBlank(message = "Please enter a product description")
+
     private String description;
-    @NotNull
-    @NotBlank(message = "Please enter a product image")
-    private String image;
-    @NotNull
-    @NotBlank(message = "Please enter a category id")
-    private String categoryName;
-    @Min(value = 1, message = "quantity can not be zero")
+    private String imageUrl;
     private int quantity;
-    private List<Review> reviews = new ArrayList<>();
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate dateAdded;
 
 
-    public static Product unPackDto(ProductDto productDto) {
-        Product product = new Product();
-        product.setName(productDto.getName());
-        product.setPrice(productDto.getPrice());
-        product.setDescription(productDto.getDescription());
-        product.setImage(productDto.getImage());
-        product.setCategoryName(productDto.getCategoryName());
-        product.setQuantity(productDto.getQuantity());
 
-        return product;
-    }
 
     public static ProductDto packDto(Product product) {
         ProductDto productDto = new ProductDto();
         productDto.setName(product.getName());
         productDto.setPrice(product.getPrice());
         productDto.setDescription(product.getDescription());
-        productDto.setImage(product.getImage());
-        productDto.setCategoryName(product.getCategoryName());
-        productDto.setReviews(product.getReviews());
+        productDto.setImageUrl(product.getImageUrl());
         productDto.setQuantity(product.getQuantity());
+        productDto.setDateAdded(product.getDateAdded());
 
         return productDto;
     }

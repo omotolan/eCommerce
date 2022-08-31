@@ -1,96 +1,83 @@
 package africa.semicolon.ecommerce.services;
 
-import africa.semicolon.ecommerce.data.model.Product;
-import africa.semicolon.ecommerce.dto.ProductDto;
-import africa.semicolon.ecommerce.dto.Response;
-import africa.semicolon.ecommerce.dto.UpdateProductDto;
-import africa.semicolon.ecommerce.exceptions.ProductException;
+import africa.semicolon.ecommerce.data.model.ProductCategory;
+import africa.semicolon.ecommerce.data.repositories.ProductCategoryRepository;
+import africa.semicolon.ecommerce.dto.*;
+import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ImportAutoConfiguration(exclude = EmbeddedMongoAutoConfiguration.class)
 class ProductServiceImplTest {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductCategoryService productCategoryService;
+
 
     @Test
-    public void testThatProductCanBeAdded() throws ProductException {
-        ProductDto productDto = ProductDto.builder()
-                .name("Iphone 13")
-                .categoryName("Phone")
-                .description("london used iphone 13")
-                .price(new BigDecimal("300000"))
-                .image("myimage.com")
-                .quantity(4)
-                .build();
-        Response response = productService.addProduct(productDto);
-        assertEquals("Iphone 13 successfully added to Phone Category", response.toString());
+    public void testThatProductCanBeAdded() throws ProductNotFoundException {
+        List<ProductCategory> productCategories = productCategoryService.getAllCategories();
+        AddProductRequest addProductRequest = new AddProductRequest();
+        addProductRequest.setName("samsung");
+        addProductRequest.setDescription("7th gen dell laptop");
+        addProductRequest.setImageUrl("image.com");
+        addProductRequest.setQuantity(5);
+        addProductRequest.setProductCategory(productCategories);
+        addProductRequest.setPrice(new BigDecimal(3000));
+        AddProductResponse addProductResponse = productService.addProduct(addProductRequest);
+
+        assertEquals("Dell Latitude successfully added", addProductResponse.getMessage());
     }
 
     @Test
-    public void testToRemoveProductById() throws ProductException {
-        Product product = new Product();
-        product.setId("62d9e1a24f4a91591b157a51");
-        Response response = productService.deleteProductById(product.getId());
-        assertEquals("Iphone 13 successfully deleted", response.toString());
+    public void testToRemoveProductById() throws ProductNotFoundException {
+        Long id = 1L;
+        Response response = productService.deleteProductById(id);
+        assertEquals("Dell Latitude successfully deleted", response.toString());
     }
 
     @Test
-    public void testToFindProductById() throws ProductException {
-        Product product = new Product();
-        product.setId("62d9e3caa2755e3e4c948864");
-        ProductDto productDto = productService.getProductById(product.getId());
+    public void testToFindProductById() throws ProductNotFoundException {
+        var id = 1L;
 
-        assertEquals("", productDto.toString());
+        ProductDto productDto = productService.getProductById(id);
+
+        assertEquals("", productDto.getName());
 
     }
 
-    @Test
-    public void testToGetAllProduct() {
-        List<ProductDto> productDtos = productService.getAllProduct();
-        assertEquals(3, productDtos.size());
-        assertEquals("", productDtos.toString());
-    }
 
     @Test
-    public void testThatProductCanBeUpdated() {
-        Product product = new Product();
-        product.setId("62d9e3caa2755e3e4c948864");
-        UpdateProductDto updateProductDto = UpdateProductDto.builder()
+    public void testThatProductCanBeUpdated() throws ProductNotFoundException {
+        var id = 4L;
+
+        UpdateProductRequest updateProductRequest = UpdateProductRequest.builder()
                 .name("Samsung s20")
-                .quantity(7)
+                .quantity(2)
                 .description("brand new phone")
                 .price(new BigDecimal(500000))
-                .image("samsungS20.com")
+                .imageUrl("samsungS20.com")
                 .build();
-        Response response = productService.updateProduct(product.getId(), updateProductDto);
+        ProductResponse response = productService.updateProduct(id, updateProductRequest);
         assertEquals("Product successfully updated", response.toString());
     }
 
     @Test
-    public void testThatProductCanBeSearched() throws ProductException {
-        Product product = new Product();
-        product.setId("62d9e3caa2755e3e4c948864");
-        Product product1 = productService.findProduct(product.getId());
-        assertEquals("", product1.toString());
-    }
+    public void testToFindProductByName() throws ProductNotFoundException {
+        Pageable pageable = PageRequest.of(1, 5);
+        Map<String, Object> pro = productService.findProductByName("Samsung s20", pageable);
 
-    @Test
-    public void testToGetAllProductsInACategory() throws ProductException {
-        Product product = new Product();
-        product.setCategoryName("Phone");
-        List<ProductDto> productDto = productService.getAllProductsInACategory(product.getCategoryName());
-        assertEquals(3, productDto.size());
+        assertEquals("", pro.get("numberOfElementInPage"));
     }
 
 }

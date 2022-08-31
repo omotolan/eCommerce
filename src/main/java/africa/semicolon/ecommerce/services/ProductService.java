@@ -1,27 +1,28 @@
 package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Product;
-import africa.semicolon.ecommerce.dto.ProductDto;
-import africa.semicolon.ecommerce.dto.Response;
-import africa.semicolon.ecommerce.dto.UpdateProductDto;
-import africa.semicolon.ecommerce.exceptions.ProductException;
+import africa.semicolon.ecommerce.data.model.Review;
+import africa.semicolon.ecommerce.dto.*;
+import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface ProductService {
-    Response addProduct(ProductDto productDto) throws ProductException;
 
-    Response deleteProductById(String id) throws ProductException;
+    Response deleteProductById(Long id) throws ProductNotFoundException;
 
-    ProductDto getProductById(String id) throws ProductException;
+    ProductDto getProductById(Long id) throws ProductNotFoundException;
 
-    List<ProductDto> getAllProduct();
+    ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) throws ProductNotFoundException;
 
-    Response updateProduct(String id, UpdateProductDto updateProductDto);
+    Map<String, Object> findProductByName(String name, Pageable pageable) throws ProductNotFoundException;
 
-    Product findProduct(String id) throws ProductException;
+    AddProductResponse addProduct(AddProductRequest addProductRequest);
+    String addReview(Long id, String review) throws ProductNotFoundException;
+    Set<Review> getAllReviews(Long id) throws ProductNotFoundException;
+    Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException;
 
-    Product findProductByName(String productName) throws ProductException;
-
-    List<ProductDto> getAllProductsInACategory(String categoryName) throws ProductException;
 }

@@ -1,15 +1,16 @@
 package africa.semicolon.ecommerce.dto;
 
 import africa.semicolon.ecommerce.data.model.Product;
-import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Setter
-@Getter
 @AllArgsConstructor
-public class Response {
+@NoArgsConstructor
+@Data
+public class ProductResponse {
     private String message;
-
+    private Product savedProduct;
 
     @Override
     public String toString(){

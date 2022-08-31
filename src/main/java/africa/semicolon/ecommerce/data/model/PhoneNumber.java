@@ -3,21 +3,19 @@ package africa.semicolon.ecommerce.data.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Address {
+public class PhoneNumber {
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
-    private String houseNumber;
-    private String street;
-    private String city;
-    private String state;
-    private String country;
-    private String zipCode;
+    private String phoneNumber;
+
 }
