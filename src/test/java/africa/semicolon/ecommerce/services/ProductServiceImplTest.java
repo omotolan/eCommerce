@@ -19,20 +19,20 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductServiceImplTest {
 
     @Autowired
-    private ProductService productService;
-    @Autowired
-    private ProductCategoryService productCategoryService;
+    private  ProductService productService;
 
 
     @Test
     public void testThatProductCanBeAdded() throws ProductNotFoundException {
-        List<ProductCategory> productCategories = productCategoryService.getAllCategories();
+        List<String> categoryNames = new ArrayList<>();
+        categoryNames.add("phones");
+        categoryNames.add("gadgets");
         AddProductRequest addProductRequest = new AddProductRequest();
         addProductRequest.setName("samsung");
         addProductRequest.setDescription("7th gen dell laptop");
         addProductRequest.setImageUrl("image.com");
         addProductRequest.setQuantity(5);
-        addProductRequest.setProductCategory(productCategories);
+        addProductRequest.setCategoryNames(categoryNames);
         addProductRequest.setPrice(new BigDecimal(3000));
         AddProductResponse addProductResponse = productService.addProduct(addProductRequest);
 
@@ -75,9 +75,11 @@ class ProductServiceImplTest {
     @Test
     public void testToFindProductByName() throws ProductNotFoundException {
         Pageable pageable = PageRequest.of(1, 5);
-        Map<String, Object> pro = productService.findProductByName("Samsung s20", pageable);
+        Map<String, Object> pro = productService.findProductByName("iphone 12", pageable);
 
-        assertEquals("", pro.get("numberOfElementInPage"));
+
+//        assertEquals("", pro.get("numberOfElementInPage"));
+        assertEquals("1", pro.get("totalNumberOfElementsInDataBase"));
     }
 
 }

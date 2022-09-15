@@ -21,8 +21,7 @@ public interface ProductService {
     Map<String, Object> findProductByName(String name, Pageable pageable) throws ProductNotFoundException;
 
     AddProductResponse addProduct(AddProductRequest addProductRequest);
-    String addReview(Long id, String review) throws ProductNotFoundException;
-    Set<Review> getAllReviews(Long id) throws ProductNotFoundException;
-    Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException;
 
+    Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException;
+    Product getProductByIddddd(Long id) throws ProductNotFoundException;
 }

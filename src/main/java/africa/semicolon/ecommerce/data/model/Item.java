@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @Entity
+@Builder
 public class Item {
     @Setter(AccessLevel.NONE)
     @Id
@@ -22,6 +23,17 @@ public class Item {
     private int quantity;
 
 
+
+        public Item validateItemQuantity(Product product, int quantity){
+
+            if (quantity > product.getQuantity() && quantity <= 0){
+                throw new IllegalArgumentException("Invalid quantity");
+            }
+            Item item = new Item();
+            item.setProduct(product);
+            item.setQuantity(quantity);
+            return item;
+        }
     public void increaseQuantity(int quantity) {
         this.quantity += quantity;
 

@@ -4,24 +4,21 @@ import africa.semicolon.ecommerce.dto.AddProductRequest;
 import africa.semicolon.ecommerce.dto.UpdateProductRequest;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import africa.semicolon.ecommerce.services.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Max;
 import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @PostMapping("/addProduct")
     public ResponseEntity<?> addProduct(@RequestBody AddProductRequest addProductRequest) {
@@ -30,7 +27,7 @@ public class ProductController {
 
     }
 
-    @GetMapping("findById/{id}")
+    @GetMapping("/findById/{id}")
     public ResponseEntity<?> getProductById(@PathVariable String id) throws ProductNotFoundException {
         var response = productService.getProductById(Long.parseLong(id));
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -48,26 +45,15 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{name}/{pageNo}/{noOfItems}")
-    public ResponseEntity<?> findProductByName(@PathVariable String name,
-                                               @PathVariable(value = "pageNo", required = false) @DefaultValue({"0"}) String pageNo,
-                                               @PathVariable(value = "noOfItems", required = false) @DefaultValue({"10"}) @Max(10) String numberOfItems) throws ProductNotFoundException {
-        Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), Integer.parseInt(numberOfItems));
+    @GetMapping("")
+    public ResponseEntity<?> findProductByName(@RequestParam String name,
+                                               @RequestParam(defaultValue = "1",value = "pageNo", required = false) String pageNo,
+                                               @RequestParam(defaultValue = "10",value = "pageSize", required = false) String pageSize) throws ProductNotFoundException {
+        Pageable pageable = PageRequest.of(Integer.parseInt(pageNo), Integer.parseInt(pageSize));
         Map<String, Object> result = productService.findProductByName(name, pageable);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
 
     }
-    @PostMapping("/addReview/{id}")
-    public ResponseEntity<?> addReview(@PathVariable String  id, @RequestBody String review) throws ProductNotFoundException {
-      var response =  productService.addReview(Long.parseLong(id), review);
 
-      return  new ResponseEntity<>(response, HttpStatus.OK);
-    }
-    @GetMapping("/allReviews/{id}")
-    public ResponseEntity<?> getAllReview(@PathVariable String id) throws ProductNotFoundException {
-        var response = productService.getAllReviews(Long.parseLong(id));
-        System.out.println("this is the size: " + response.size());
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 }

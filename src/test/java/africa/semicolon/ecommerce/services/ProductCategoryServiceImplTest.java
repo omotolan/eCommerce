@@ -39,12 +39,12 @@ class ProductCategoryServiceImplTest {
         assertEquals(2, productCategories.size());
     }
 
-    @Test
-    public void testToGetAllProductsInACategory() throws ProductNotFoundException {
-        Long id = 1L;
-        Pageable pageable = PageRequest.of(2, 5);
-        var response = productCategoryService.getAllProductByCategory(id, pageable);
-        assertEquals(0, response.size());
-    }
+//    @Test
+//    public void testToGetAllProductsInACategory() throws ProductNotFoundException {
+//        Long id = 1L;
+//        Pageable pageable = PageRequest.of(2, 5);
+//        var response = productCategoryService.getAllProductByCategory(id, pageable);
+//        assertEquals(0, response.size());
+//    }
 
 }

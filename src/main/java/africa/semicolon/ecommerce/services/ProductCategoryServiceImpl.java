@@ -8,6 +8,7 @@ import africa.semicolon.ecommerce.dto.Response;
 import africa.semicolon.ecommerce.exceptions.ProductCategoryException;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +17,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ProductCategoryServiceImpl implements ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
-    private final ProductService productService;
     private final ModelMapper modelMapper;
 
 
@@ -48,10 +48,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return productCategoryRepository.findAll();
     }
 
+//    @Override
+//    public Map<String, Object> getAllProductByCategory(Long id, Pageable pageable) throws ProductNotFoundException {
+//        ProductCategory productCategory = productCategoryRepository.findProductCategoriesById(id);
+//        List<Product> products = productCategory.getProducts();
+//        return productService.returnProductInPages(products, pageable);
+//    }
     @Override
-    public Map<String, Object> getAllProductByCategory(Long id, Pageable pageable) throws ProductNotFoundException {
-        ProductCategory productCategory = productCategoryRepository.findProductCategoriesById(id);
-        List<Product> products = productCategory.getProducts();
-        return productService.returnProductInPages(products, pageable);
+    public ProductCategory findCategoryByName(String name){
+        return productCategoryRepository.findByName(name);
     }
 }

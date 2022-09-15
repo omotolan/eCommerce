@@ -1,21 +1,22 @@
 package africa.semicolon.ecommerce.dto;
 
+import africa.semicolon.ecommerce.data.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
+import javax.validation.constraints.Positive;
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
 @Validated
-public class AddCategoryRequest {
-    @NotBlank
+public class UpdateItemInCartRequest {
     @NotNull
-    private String name;
+    private Product product;
+    @Positive
+    private int quantity;
 }

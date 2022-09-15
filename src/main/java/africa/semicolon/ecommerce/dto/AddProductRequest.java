@@ -32,5 +32,5 @@ public class AddProductRequest {
     private String imageUrl;
     @Min(value = 1, message = "quantity should be greater than zero")
     private int quantity;
-    private List<ProductCategory> productCategory =new ArrayList<>();
+    private List<String> categoryNames = new ArrayList<>();
 }

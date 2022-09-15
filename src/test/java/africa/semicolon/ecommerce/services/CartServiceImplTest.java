@@ -4,10 +4,15 @@ import africa.semicolon.ecommerce.data.model.Cart;
 import africa.semicolon.ecommerce.data.model.Item;
 import africa.semicolon.ecommerce.data.model.Product;
 import africa.semicolon.ecommerce.data.repositories.CartRepository;
-import africa.semicolon.ecommerce.dto.CartDto;
+import africa.semicolon.ecommerce.data.repositories.ProductRepository;
+import africa.semicolon.ecommerce.dto.AddItemRequest;
+import africa.semicolon.ecommerce.dto.ProductDto;
+import africa.semicolon.ecommerce.dto.ProductResponse;
 import africa.semicolon.ecommerce.dto.Response;
 import africa.semicolon.ecommerce.exceptions.CartException;
-import africa.semicolon.ecommerce.exceptions.ProductException;
+import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -19,12 +24,28 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ImportAutoConfiguration(exclude = EmbeddedMongoAutoConfiguration.class)
 class CartServiceImplTest {
     @Autowired
     private CartService cartService;
     @Autowired
     private CartRepository cartRepository;
+
+    @Autowired
+    private ProductService productService;
+
+
+
+    @BeforeEach
+    void setUp() {
+//        cartRepository.deleteAll();
+//        productRepository.deleteAll();
+    }
+
+    @AfterEach
+    void tearDown() {
+//        cartRepository.deleteAll();
+//        productRepository.deleteAll();
+    }
 
     @Test
     public void testThatCartCanBeCreated() {
@@ -34,62 +55,51 @@ class CartServiceImplTest {
 
 
     @Test
-    public void testThatItemCanBeAddedToCart() throws ProductException, CartException {
+    public void testThatItemCanBeAddedToCart() throws CartException, ProductNotFoundException {
 
-        Product product = new Product();
-//        product.setName("Samsung s20");
-        product.setName("Iphone 13");
+      Product product =  productService.getProductByIddddd(2L);
+        AddItemRequest addItemRequest = new AddItemRequest();
+        addItemRequest.setProduct(product);
+        addItemRequest.setQuantity(5);
+        var cardId = 1L;
 
-//        product.setId("62d9e3caa2755e3e4c948864");
-        product.setId("62dc54cdeb40e53ec53cc160");
+       var response = cartService.addToCart(cardId, addItemRequest);
 
-        Item item = new Item();
-        item.setProduct(product);
-        item.setQuantity(2);
-        String cartId = "62dcf10090786e5bdafd7e89";
-        Response response = cartService.addItemToCart(cartId, item);
-        assertEquals("Samsung s20 added to cart", response.toString());
-//        TODO: augend error with item total(when not initialized)
+        assertEquals("Samsung s20 added to cart", response);
+
     }
 
     @Test
     public void testToGetCartTotal() throws CartException {
-        String cartId = "62db9e0dfd89233479caa40e";
+        Long cartId = 1L;
         BigDecimal total = cartService.getCartTotal(cartId);
-        assertEquals(new BigDecimal(100000), total);
+        assertEquals(new BigDecimal("12000.00"), total);
     }
 
     @Test
-    public void testThatItemCanBeRemovedFromCart() throws ProductException, CartException {
-        Product product = new Product();
-        product.setName("Samsung s20");
-        product.setId("62d9e3caa2755e3e4c948864");
-        Item item = new Item();
-        item.setProduct(product);
-        String cartId = "62dcf10090786e5bdafd7e89";
-
-        Response response = cartService.removeItemFromCart(cartId, item);
-        assertEquals("Samsung s20 removed from cart", response.toString());
+    public void testThatItemCanBeRemovedFromCart() throws CartException {
+//        Item item = new Item();
+//        item.setQuantity(3);
+//        item.setProduct(addItemRequest.getProduct());
+//        Response responses = cartService.removeItemFromCart(addItemRequest.getCartId(), item);
+//        assertEquals("Samsung s20 removed from cart", responses.toString());
     }
-
+//
     @Test
-    public void testToReduceQuantityOfAnItem() throws CartException, ProductException {
-        Product product = new Product();
-        product.setName("Samsung s20");
-        product.setId("62d9e3caa2755e3e4c948864");
-        Item item = new Item();
-        item.setProduct(product);
-        String cartId = "62dcf10090786e5bdafd7e89";
-        int quantity = 1;
-        Response response = cartService.reduceItemQuantityInCart(cartId, item, quantity);
-        assertEquals("", response.toString());
+    public void testToReduceQuantityOfAnItem() throws CartException {
+//        Item item = new Item();
+//        item.setQuantity(3);
+//        item.setProduct(addItemRequest.getProduct());
+//
+//
+//        Response response1 = cartService.reduceItemQuantityInCart(addItemRequest.getCartId(), item);
 
     }
 
     @Test
     public void testThatCartBeCleared() throws CartException {
-        String cartId = "62dcf10090786e5bdafd7e89";
+        Long cartId = 1L;
         Response response = cartService.clearCart(cartId);
-        assertEquals("", response.toString());
+        assertEquals("cart cleared", response.toString());
     }
 }

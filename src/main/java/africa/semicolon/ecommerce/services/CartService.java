@@ -1,22 +1,25 @@
 package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Item;
+import africa.semicolon.ecommerce.dto.AddItemRequest;
 import africa.semicolon.ecommerce.dto.Response;
+import africa.semicolon.ecommerce.dto.UpdateItemInCartRequest;
 import africa.semicolon.ecommerce.exceptions.CartException;
-import africa.semicolon.ecommerce.exceptions.ProductException;
 
 import java.math.BigDecimal;
 
 public interface CartService {
     void createCart();
+    String addToCart(Long cartId,AddItemRequest addItemRequest) throws CartException;
 
-    Response addItemToCart(String cartId,Item item) throws ProductException, CartException;
 
-    BigDecimal getCartTotal(String cartId) throws CartException;
-
-    Response removeItemFromCart(String cartId, Item item) throws ProductException, CartException;
-
-    Response reduceItemQuantityInCart(String cartId, Item item, int quantity) throws CartException, ProductException;
-
-    Response clearCart(String cartId) throws CartException;
+//    Response addItemToCart(Long cartId, Long productId, int quantity) throws ProductException, CartException;
+//
+    BigDecimal getCartTotal(Long cartId) throws CartException;
+//
+    Response removeItemFromCart(Long cartId, Long productId) throws  CartException;
+//
+    Response reduceItemQuantityInCart(Long cartId, UpdateItemInCartRequest updateItemInCartRequest) throws CartException;
+//
+    Response clearCart(Long cartId) throws CartException;
 }

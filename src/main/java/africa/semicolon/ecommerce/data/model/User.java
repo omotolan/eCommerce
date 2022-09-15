@@ -44,7 +44,7 @@ public class User {
     private List<PhoneNumber> phoneNumber = new ArrayList<>();
     @OneToMany
     private Set<Role> roles = new HashSet<>();
-    @OneToMany
-    private List<OrderEntity> orderEntities = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    private List<OrderEntity> orderEntities = new ArrayList<>();
 
 }

@@ -1,32 +1,43 @@
 package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Product;
-import africa.semicolon.ecommerce.data.model.Review;
+import africa.semicolon.ecommerce.data.model.ProductCategory;
 import africa.semicolon.ecommerce.data.repositories.ProductRepository;
 import africa.semicolon.ecommerce.dto.*;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+    private final ProductCategoryService productCategoryService;
+
+
+    private List<ProductCategory> getCategories(List<String> categoryNames) {
+        List<ProductCategory> productCategories = new ArrayList<>();
+        for (String name : categoryNames) {
+            productCategories.add(productCategoryService.findCategoryByName(name));
+        }
+        return productCategories;
+    }
 
     @Override
+    @Transactional
     public AddProductResponse addProduct(AddProductRequest addProductRequest) {
 
         Product product = modelMapper.map(addProductRequest, Product.class);
+        product.setProductCategory(getCategories(addProductRequest.getCategoryNames()));
 
         Product savedProduct = productRepository.save(product);
         log.info("product added {}", savedProduct.getName());
@@ -58,6 +69,10 @@ public class ProductServiceImpl implements ProductService {
         return ProductDto.packDto(findByIdInternal(id));
     }
 
+    @Override
+    public Product getProductByIddddd(Long id) throws ProductNotFoundException {
+        return findByIdInternal(id);
+    }
 
     @Override
     public ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) throws ProductNotFoundException {
@@ -81,23 +96,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Map<String, Object> findProductByName(String name, Pageable pageable) throws ProductNotFoundException {
         List<Product> products = productRepository.findByName(name);
-
         return returnProductInPages(products, pageable);
 
     }
 
     @Override
     public Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException {
+
         List<ProductDto> productDtoList = new ArrayList<>();
         for (Product product : products) {
             productDtoList.add(ProductDto.packDto(product));
         }
         System.out.println("this is the size: " + productDtoList.size());
-        Page<ProductDto> page = new PageImpl<>(productDtoList, pageable, products.size());
+        long total = (long) productDtoList.size();
+        Page<ProductDto> page = new PageImpl<>(productDtoList, pageable, total);
         log.info("this is the number: {} ", page.getTotalElements());
-        if (page.getTotalElements() == 0) {
-            throw new ProductNotFoundException("No product");
-        }
         Map<String, Object> pageResult = new HashMap<>();
         pageResult.put("totalNumberOfPages", page.getTotalPages());
         pageResult.put("totalNumberOfElementsInDataBase", page.getTotalElements());
@@ -116,23 +129,12 @@ public class ProductServiceImpl implements ProductService {
         return pageResult;
     }
 
-    @Override
-    public String addReview(Long id, String review) throws ProductNotFoundException {
-        Product product = findByIdInternal(id);
-        Review addReview = new Review(review);
-        product.getReviews().add(addReview);
-        productRepository.save(product);
-
-        return "review added";
-
+    public Map<String, Object> findProductsInACategory(Long productCategoryId, Pageable pageable) throws ProductNotFoundException {
+        List<Product> products = productRepository.findByProductCategoryId(productCategoryId);
+        return returnProductInPages(products, pageable);
     }
 
-    @Override
-    public Set<Review> getAllReviews(Long id) throws ProductNotFoundException {
-        Product product = findByIdInternal(id);
-        return product.getReviews();
 
-    }
 
 
 }

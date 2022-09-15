@@ -22,9 +22,11 @@ public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String deliveryAddress;
+    @OneToOne
+    private Address deliveryAddress;
     private BigDecimal orderTotal;
+    @ManyToOne
+    private User user;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")

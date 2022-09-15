@@ -1,7 +1,6 @@
 package africa.semicolon.ecommerce.data.model;
 
-import africa.semicolon.ecommerce.exceptions.CartException;
-import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
+import africa.semicolon.ecommerce.dto.UpdateItemInCartRequest;
 import lombok.*;
 
 
@@ -19,80 +18,57 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Map<Long, Item> items = new HashMap<>();
     private BigDecimal total = BigDecimal.ZERO;
 
 
-
-
-    public void addItem(Product product, int quantity) throws ProductNotFoundException {
-        Long productId = product.getId();
-        Item item = new Item();
-        System.out.println("total of cart to before add: "+total);
-
-        item.setProduct(product);
-        System.out.println("price of product to be added: "+item.getProduct().getPrice());
-////        if (item.getQuantity() > product.getQuantity()){
-////            throw new  IllegalArgumentException("jsdhds");
-////        }
-        if (items.containsKey(productId)) {
-            items.get(productId).increaseQuantity(quantity);
-           // calculateTotal( product, quantity);
-          //  total = total.multiply()
-        } else {
-////            items.putIfAbsent(productId, item);
-            items.put(productId, item);
-            item.increaseQuantity(quantity);
-
-
+    private void validateItemQuantity(Product product, int quantity) {
+        if (quantity > product.getQuantity() || quantity <= 0) {
+            throw new IllegalArgumentException("Invalid quantity");
         }
-        total = total.add( calculateTotal( product,  quantity));
-
-        System.out.println(total);
     }
 
-    private BigDecimal calculateTotal(Product product, int quantity) {
+    public void addItem(Item item) {
+        validateItemQuantity(item.getProduct(), item.getQuantity());
+
+        if (items.containsKey(item.getProduct().getId())) {
+            items.replace(item.getProduct().getId(), item);
+        } else {
+            items.put(item.getProduct().getId(), item);
+
+        }
+        calculateTotal();
+    }
+
+    public void calculateTotal() {
         BigDecimal total = BigDecimal.ZERO;
-        System.out.println("items in cart--> "+items.values().size());
-        for (int i = 0; i < quantity; i++) {
-            total = total.add(product.getPrice());
+        for (Item item : items.values()) {
+            total = item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity()));
         }
-
-
-////        for (Map.Entry<String, Item> item : items.entrySet()){
-////            total = total.add(item.getValue().getProduct().getPrice().multiply(new BigDecimal(item.getValue().getQuantity())));
-////           // total = total.multiply(new BigDecimal( item.getValue().getQuantity()));
-////            System.out.println("total of product  added in loop: "+total);
-////        }
-        this.total = this.total.add(total);
-////        for (Item itemInCart : items.values()) {
-////            System.out.println("item-> "+ itemInCart.getQuantity());
-////            total = total.add(itemInCart.getProduct().getPrice());
-////        }
-        return total;
+        this.total = total;
     }
 
-
-    public void removeItem(Long productId, int quantity) throws CartException {
-        if (items.containsKey(productId)) {
-            items.get(productId).decreaseQuantity(quantity);
-        } else {
-            throw new CartException("Item not in cart");
+    public void reduceItemQuantity(UpdateItemInCartRequest updateItemInCartRequest) {
+        validateItemQuantity(updateItemInCartRequest.getProduct(), updateItemInCartRequest.getQuantity());
+        if (items.containsKey(updateItemInCartRequest.getProduct().getId())) {
+            Item item = Item.builder()
+                    .product(updateItemInCartRequest.getProduct())
+                    .quantity(updateItemInCartRequest.getQuantity())
+                    .build();
+            items.replace(updateItemInCartRequest.getProduct().getId(), item);
+            calculateTotal();
         }
-       total = total.subtract( calculateTotal( items.get(productId).getProduct(),  quantity));
+
     }
 
 
     public void removeItem(Long productId) {
-       total = total.subtract( calculateTotal( items.get(productId).getProduct(),
-               items.get(productId).getQuantity()));
-
-        items.remove(productId);
-
-//       // calculateTotal();
+        if (items.containsKey(productId)) {
+            items.remove(productId);
+            calculateTotal();
+        }
     }
-
 
 
 }

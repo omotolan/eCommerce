@@ -2,6 +2,7 @@ package africa.semicolon.ecommerce.dto;
 
 import africa.semicolon.ecommerce.data.model.ProductCategory;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 @Builder
+@Validated
 public class UpdateProductRequest {
     @NotNull
     @NotBlank(message = "Please enter a product name")
