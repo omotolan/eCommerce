@@ -28,6 +28,6 @@ public class ProductCategory {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private LocalDate dateCreated = LocalDate.now();
+    private LocalDate dateCreated;
 
 }

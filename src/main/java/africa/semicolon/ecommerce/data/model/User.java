@@ -30,20 +30,20 @@ public class User {
     private String lastName;
     private String emailAddress;
     private String password;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private LocalDate dateJoined = LocalDate.now();
-    @OneToMany
-    private List<Address> addresses = new ArrayList<>();
-    private Boolean isVerified = Boolean.FALSE;
-
-    @OneToMany
-    private List<PhoneNumber> phoneNumber = new ArrayList<>();
-    @OneToMany
-    private Set<Role> roles = new HashSet<>();
+    private LocalDate dateJoined;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address addresses;
+    private Boolean isVerified;
+    private String phoneNumber;
+//    @OneToMany
+//    private List<PhoneNumber> phoneNumber = new ArrayList<>();
+//    @OneToMany
+//    private Set<Role> roles = new HashSet<>();
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    private List<OrderEntity> orderEntities = new ArrayList<>();
 

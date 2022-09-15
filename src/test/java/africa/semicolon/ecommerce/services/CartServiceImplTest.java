@@ -1,13 +1,8 @@
 package africa.semicolon.ecommerce.services;
 
-import africa.semicolon.ecommerce.data.model.Cart;
-import africa.semicolon.ecommerce.data.model.Item;
 import africa.semicolon.ecommerce.data.model.Product;
 import africa.semicolon.ecommerce.data.repositories.CartRepository;
-import africa.semicolon.ecommerce.data.repositories.ProductRepository;
 import africa.semicolon.ecommerce.dto.AddItemRequest;
-import africa.semicolon.ecommerce.dto.ProductDto;
-import africa.semicolon.ecommerce.dto.ProductResponse;
 import africa.semicolon.ecommerce.dto.Response;
 import africa.semicolon.ecommerce.exceptions.CartException;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
@@ -15,8 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
@@ -57,10 +50,10 @@ class CartServiceImplTest {
     @Test
     public void testThatItemCanBeAddedToCart() throws CartException, ProductNotFoundException {
 
-      Product product =  productService.getProductByIddddd(2L);
+      Product product =  productService.getProduct(1L);
         AddItemRequest addItemRequest = new AddItemRequest();
         addItemRequest.setProduct(product);
-        addItemRequest.setQuantity(5);
+        addItemRequest.setQuantity(2);
         var cardId = 1L;
 
        var response = cartService.addToCart(cardId, addItemRequest);

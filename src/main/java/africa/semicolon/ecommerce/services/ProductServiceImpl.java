@@ -12,6 +12,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -38,6 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = modelMapper.map(addProductRequest, Product.class);
         product.setProductCategory(getCategories(addProductRequest.getCategoryNames()));
+        product.setDateAdded(LocalDate.now());
 
         Product savedProduct = productRepository.save(product);
         log.info("product added {}", savedProduct.getName());
@@ -70,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductByIddddd(Long id) throws ProductNotFoundException {
+    public Product getProduct(Long id) throws ProductNotFoundException {
         return findByIdInternal(id);
     }
 

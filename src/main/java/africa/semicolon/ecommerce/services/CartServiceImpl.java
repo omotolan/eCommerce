@@ -50,6 +50,11 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public Cart getCartById(Long cartId) throws CartException {
+        return findCartByTheId(cartId);
+    }
+
+    @Override
     public BigDecimal getCartTotal(Long cartId) throws CartException {
         Cart cart = findCartByTheId(cartId);
         return cart.getTotal();

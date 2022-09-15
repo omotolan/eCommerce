@@ -1,5 +1,6 @@
 package africa.semicolon.ecommerce.services;
 
+import africa.semicolon.ecommerce.data.model.Cart;
 import africa.semicolon.ecommerce.data.model.Item;
 import africa.semicolon.ecommerce.dto.AddItemRequest;
 import africa.semicolon.ecommerce.dto.Response;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 public interface CartService {
     void createCart();
     String addToCart(Long cartId,AddItemRequest addItemRequest) throws CartException;
+    Cart getCartById(Long cartId) throws CartException;
 
 
 //    Response addItemToCart(Long cartId, Long productId, int quantity) throws ProductException, CartException;

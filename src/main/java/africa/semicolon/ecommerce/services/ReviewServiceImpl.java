@@ -5,12 +5,12 @@ import africa.semicolon.ecommerce.data.model.Review;
 import africa.semicolon.ecommerce.data.repositories.ReviewRepository;
 import africa.semicolon.ecommerce.dto.Response;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,8 +18,6 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
-
-
     private final ReviewRepository reviewRepository;
     private final ProductService productService;
 
@@ -34,11 +32,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
     @Override
     @Transactional
-    public String addReview(Long productId, String review) throws ProductNotFoundException {
-       Product product = productService.getProductByIddddd(productId);
-        Review addReview = new Review(review);
-        addReview.setProduct(product);
-        reviewRepository.save(addReview);
+    public String addReview(Long productId, String comment) throws ProductNotFoundException {
+       Product product = productService.getProduct(productId);
+        Review review = new Review(comment);
+        review.setProduct(product);
+        review.setDateAdded(LocalDate.now());
+        reviewRepository.save(review);
 
         return "review added";
 

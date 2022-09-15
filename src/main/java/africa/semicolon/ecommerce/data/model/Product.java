@@ -31,7 +31,7 @@ public class Product {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private LocalDate dateAdded = LocalDate.now();
+    private LocalDate dateAdded;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "product_product_category",
             joinColumns = { @JoinColumn(name = "fk_product") },

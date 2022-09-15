@@ -26,7 +26,7 @@ class ProductServiceImplTest {
     public void testThatProductCanBeAdded() throws ProductNotFoundException {
         List<String> categoryNames = new ArrayList<>();
         categoryNames.add("phones");
-        categoryNames.add("gadgets");
+//        categoryNames.add("gadgets");
         AddProductRequest addProductRequest = new AddProductRequest();
         addProductRequest.setName("samsung");
         addProductRequest.setDescription("7th gen dell laptop");
