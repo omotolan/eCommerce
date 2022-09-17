@@ -1,6 +1,6 @@
 package africa.semicolon.ecommerce.data.model;
 
-import africa.semicolon.ecommerce.dto.UpdateItemInCartRequest;
+import africa.semicolon.ecommerce.dto.requests.UpdateItemInCartRequest;
 import lombok.*;
 
 

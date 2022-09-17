@@ -1,10 +1,9 @@
 package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Cart;
-import africa.semicolon.ecommerce.data.model.Item;
-import africa.semicolon.ecommerce.dto.AddItemRequest;
-import africa.semicolon.ecommerce.dto.Response;
-import africa.semicolon.ecommerce.dto.UpdateItemInCartRequest;
+import africa.semicolon.ecommerce.dto.requests.AddItemRequest;
+import africa.semicolon.ecommerce.dto.responses.Response;
+import africa.semicolon.ecommerce.dto.requests.UpdateItemInCartRequest;
 import africa.semicolon.ecommerce.exceptions.CartException;
 
 import java.math.BigDecimal;

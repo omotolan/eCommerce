@@ -1,7 +1,8 @@
 package africa.semicolon.ecommerce.controller;
 
-import africa.semicolon.ecommerce.dto.AddProductRequest;
-import africa.semicolon.ecommerce.dto.UpdateProductRequest;
+import africa.semicolon.ecommerce.data.model.Product;
+import africa.semicolon.ecommerce.dto.requests.AddProductRequest;
+import africa.semicolon.ecommerce.dto.requests.UpdateProductRequest;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import africa.semicolon.ecommerce.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -21,6 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping("/addProduct")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN, SELLER, ADMIN')")
     public ResponseEntity<?> addProduct(@RequestBody AddProductRequest addProductRequest) {
         var response = productService.addProduct(addProductRequest);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -40,6 +43,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     public ResponseEntity<?> deleteProduct(@PathVariable String id) throws ProductNotFoundException {
         var response = productService.deleteProductById(Long.parseLong(id));
         return new ResponseEntity<>(response, HttpStatus.OK);

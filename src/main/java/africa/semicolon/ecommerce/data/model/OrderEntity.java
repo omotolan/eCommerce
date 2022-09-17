@@ -31,7 +31,8 @@ public class OrderEntity {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateCreated;
-    private Boolean isSuccessful;
+    private Boolean isPayOnDelivery;
+//    private Boolean isSuccessful;
 
 
 }

@@ -1,17 +1,13 @@
 package africa.semicolon.ecommerce.services;
 
-import africa.semicolon.ecommerce.data.model.Product;
 import africa.semicolon.ecommerce.data.model.ProductCategory;
 import africa.semicolon.ecommerce.data.repositories.ProductCategoryRepository;
-import africa.semicolon.ecommerce.dto.AddCategoryRequest;
-import africa.semicolon.ecommerce.dto.Response;
+import africa.semicolon.ecommerce.dto.requests.AddCategoryRequest;
+import africa.semicolon.ecommerce.dto.responses.Response;
 import africa.semicolon.ecommerce.exceptions.ProductCategoryException;
-import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

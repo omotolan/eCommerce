@@ -3,8 +3,7 @@ package africa.semicolon.ecommerce.services;
 import africa.semicolon.ecommerce.data.model.Cart;
 import africa.semicolon.ecommerce.data.model.User;
 import africa.semicolon.ecommerce.data.repositories.UserRepository;
-import africa.semicolon.ecommerce.dto.CreateUserRequest;
-import africa.semicolon.ecommerce.dto.ProductDto;
+import africa.semicolon.ecommerce.dto.requests.CreateUserRequest;
 import africa.semicolon.ecommerce.dto.UserDto;
 import africa.semicolon.ecommerce.exceptions.UserAlreadyExistException;
 import africa.semicolon.ecommerce.exceptions.UserDoesNotExistException;
@@ -23,27 +22,6 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public UserDto createUser(CreateUserRequest createUserRequest) throws UserAlreadyExistException {
-        userExist(createUserRequest.getEmailAddress());
-        User user = User.builder()
-                .addresses(createUserRequest.getAddresses())
-                .emailAddress(createUserRequest.getEmailAddress())
-                .firstName(createUserRequest.getFirstName())
-                .dateJoined(LocalDate.now())
-                .lastName(createUserRequest.getLastName())
-                .password(createUserRequest.getPassword())
-                .password(createUserRequest.getPassword())
-                .isVerified(Boolean.FALSE)
-                .phoneNumber(createUserRequest.getPhoneNumber())
-                .cart(new Cart())
-                .build();
-        User savedUser = userRepository.save(user);
-
-        return modelMapper.map(savedUser, UserDto.class);
-
-
-    }
-    @Override
     public User findUserById(Long id) throws UserDoesNotExistException {
         return findUserByIdInternal(id);
     }
@@ -55,7 +33,7 @@ public class UserServiceImpl implements UserService{
         return user.get();
     }
     private void userExist(String emailAddress) throws UserAlreadyExistException {
-      User user =  userRepository.findByEmailAddress(emailAddress);
+      User user =  userRepository.findByEmail(emailAddress);
       if (user != null){
           throw new UserAlreadyExistException("Email already exist");
       }

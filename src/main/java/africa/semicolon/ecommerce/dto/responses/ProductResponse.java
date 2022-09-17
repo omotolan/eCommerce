@@ -1,4 +1,4 @@
-package africa.semicolon.ecommerce.dto;
+package africa.semicolon.ecommerce.dto.responses;
 
 import africa.semicolon.ecommerce.data.model.Product;
 import lombok.AllArgsConstructor;

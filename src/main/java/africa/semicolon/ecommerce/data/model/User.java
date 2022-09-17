@@ -28,7 +28,7 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
-    private String emailAddress;
+    private String email;
     private String password;
     @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
@@ -42,8 +42,8 @@ public class User {
     private String phoneNumber;
 //    @OneToMany
 //    private List<PhoneNumber> phoneNumber = new ArrayList<>();
-//    @OneToMany
-//    private Set<Role> roles = new HashSet<>();
+    @OneToMany
+    private Set<Role> roles = new HashSet<>();
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    private List<OrderEntity> orderEntities = new ArrayList<>();
 

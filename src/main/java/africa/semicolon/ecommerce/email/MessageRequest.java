@@ -1,21 +1,22 @@
-package africa.semicolon.ecommerce.dto;
+package africa.semicolon.ecommerce.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
-@Validated
-public class AddCategoryRequest {
-    @NotBlank
+public class MessageRequest {
     @NotNull
-    private String name;
+    @NotBlank
+    private String firstName;
+    private String receiver;
+    private String body;
+    private String subject;
+    private String sender;
 }

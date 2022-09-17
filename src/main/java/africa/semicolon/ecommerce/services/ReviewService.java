@@ -1,10 +1,9 @@
 package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Review;
-import africa.semicolon.ecommerce.dto.Response;
+import africa.semicolon.ecommerce.dto.responses.Response;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 
-import java.util.List;
 import java.util.Set;
 
 public interface ReviewService {

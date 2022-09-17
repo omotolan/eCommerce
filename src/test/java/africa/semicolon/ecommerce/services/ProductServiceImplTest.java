@@ -1,8 +1,11 @@
 package africa.semicolon.ecommerce.services;
 
-import africa.semicolon.ecommerce.data.model.ProductCategory;
-import africa.semicolon.ecommerce.data.repositories.ProductCategoryRepository;
 import africa.semicolon.ecommerce.dto.*;
+import africa.semicolon.ecommerce.dto.requests.AddProductRequest;
+import africa.semicolon.ecommerce.dto.requests.UpdateProductRequest;
+import africa.semicolon.ecommerce.dto.responses.AddProductResponse;
+import africa.semicolon.ecommerce.dto.responses.ProductResponse;
+import africa.semicolon.ecommerce.dto.responses.Response;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

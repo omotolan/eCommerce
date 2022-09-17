@@ -2,8 +2,8 @@ package africa.semicolon.ecommerce.services;
 
 import africa.semicolon.ecommerce.data.model.Product;
 import africa.semicolon.ecommerce.data.repositories.CartRepository;
-import africa.semicolon.ecommerce.dto.AddItemRequest;
-import africa.semicolon.ecommerce.dto.Response;
+import africa.semicolon.ecommerce.dto.requests.AddItemRequest;
+import africa.semicolon.ecommerce.dto.responses.Response;
 import africa.semicolon.ecommerce.exceptions.CartException;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import org.junit.jupiter.api.AfterEach;

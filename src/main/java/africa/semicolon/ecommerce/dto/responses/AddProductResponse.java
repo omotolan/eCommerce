@@ -1,5 +1,6 @@
-package africa.semicolon.ecommerce.dto;
+package africa.semicolon.ecommerce.dto.responses;
 
+import africa.semicolon.ecommerce.dto.ProductDto;
 import lombok.Getter;
 import lombok.Setter;
 

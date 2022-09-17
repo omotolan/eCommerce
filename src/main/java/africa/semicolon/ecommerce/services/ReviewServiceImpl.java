@@ -3,7 +3,7 @@ package africa.semicolon.ecommerce.services;
 import africa.semicolon.ecommerce.data.model.Product;
 import africa.semicolon.ecommerce.data.model.Review;
 import africa.semicolon.ecommerce.data.repositories.ReviewRepository;
-import africa.semicolon.ecommerce.dto.Response;
+import africa.semicolon.ecommerce.dto.responses.Response;
 import africa.semicolon.ecommerce.exceptions.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
