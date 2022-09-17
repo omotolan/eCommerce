@@ -16,10 +16,11 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public void createRole(RoleType roleType) {
+    public String createRole(RoleType roleType) {
         Role role = new Role();
         role.setRoleType(roleType);
         roleRepository.save(role);
+        return "Role created";
     }
     @Override
     public Optional<Role> getRoleById(Long id){

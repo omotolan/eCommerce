@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoleService {
-    void createRole(RoleType roleType);
+    String createRole(RoleType roleType);
 
 //    Role getRoleByName(String name) throws RoleException;
 

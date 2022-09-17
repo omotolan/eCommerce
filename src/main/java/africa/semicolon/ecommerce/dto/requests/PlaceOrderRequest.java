@@ -23,4 +23,5 @@ public class PlaceOrderRequest {
     @NotNull
     private Long userId;
     private Boolean isPayOnDelivery;
+    private String paymentLink;
 }

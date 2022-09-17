@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
+    private final TransactionService transactionService;
 
     private final CartService cartService;
 
@@ -38,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
                 .orderTotal(cart.getTotal())
                 .user(user)
                 .dateCreated(LocalDate.now())
-                .deliveryAddress(user.getAddresses())
+                .deliveryAddress(user.getAddress())
                 .build();
 
         if (placeOrderRequest.getIsPayOnDelivery()) {
@@ -50,10 +52,13 @@ public class OrderServiceImpl implements OrderService {
              * call an external api to make payment and confirm if payment was successful
              * */
             Transaction transaction = new Transaction();
-            // TODO: Redirection to payment page
-            if (transaction.getIsSuccessful()) {
-                orderEntity.setIsPayOnDelivery(Boolean.FALSE);
+            if (transactionService.verifyTransaction(placeOrderRequest.getPaymentLink())) {
+
                 OrderEntity savedOrder = orderRepository.save(orderEntity);
+                transaction.setLocalDateTime(LocalDateTime.now());
+                transaction.setPaymentLink(placeOrderRequest.getPaymentLink());
+                transaction.setOrderEntity(savedOrder);
+                transactionService.saveTransaction(transaction);
                 return OrderDTO.packDto(savedOrder);
             }
         }

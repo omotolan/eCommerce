@@ -14,6 +14,7 @@ import javax.validation.constraints.Positive;
 @Getter
 @Entity
 @Validated
+@Builder
 public class Address {
     @Setter(AccessLevel.NONE)
     @Id

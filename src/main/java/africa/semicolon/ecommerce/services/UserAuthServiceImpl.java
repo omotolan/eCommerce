@@ -1,5 +1,6 @@
 package africa.semicolon.ecommerce.services;
 
+import africa.semicolon.ecommerce.data.model.Cart;
 import africa.semicolon.ecommerce.data.model.ConfirmationToken;
 import africa.semicolon.ecommerce.data.model.Role;
 import africa.semicolon.ecommerce.data.model.User;
@@ -26,7 +27,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -47,9 +50,14 @@ public class UserAuthServiceImpl implements UserAuthService, UserDetailsService 
     public SignUpResponse signUp(SignUpRequest signUpRequest) throws UserAlreadyExistException {
         validateEmail(signUpRequest.getEmail());
 
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate dateOfBirth = LocalDate.parse(signUpRequest.getDateOfBirth(), dateTimeFormatter);
         User user = mapper.map(signUpRequest, User.class);
+        user.setDateOfBirth(dateOfBirth);
+
         String encodedPassword = bCryptPasswordEncoder.encode(signUpRequest.getPassword());
         user.setPassword(encodedPassword);
+        user.setCart(new Cart());
         User registeredUser = userRepository.save(user);
 
         log.info("new user was created " + registeredUser.getEmail());
@@ -143,7 +151,7 @@ public class UserAuthServiceImpl implements UserAuthService, UserDetailsService 
         try {
             user = userRepository.findUserByEmailIgnoreCase(email).orElseThrow(() -> new UserDoesNotExistException("user not found"));
         } catch (UserDoesNotExistException e) {
-            log.error("user does not exist "+ e.getMessage());
+            log.error("user does not exist " + e.getMessage());
             //throw new RuntimeException(e);
         }
         org.springframework.security.core.userdetails.User returnedUser = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getAuthorities(user.getRoles()));
@@ -151,10 +159,10 @@ public class UserAuthServiceImpl implements UserAuthService, UserDetailsService 
         return returnedUser;
     }
 
-     private Collection<? extends GrantedAuthority> getAuthorities(Set<Role> roles) {
-         return roles.stream().map(
-                 role -> new SimpleGrantedAuthority(role.getRoleType().name())
-         ).collect(Collectors.toSet());
+    private Collection<? extends GrantedAuthority> getAuthorities(Set<Role> roles) {
+        return roles.stream().map(
+                role -> new SimpleGrantedAuthority(role.getRoleType().name())
+        ).collect(Collectors.toSet());
     }
 
 }

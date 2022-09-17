@@ -2,7 +2,9 @@ package africa.semicolon.ecommerce.dto.responses;
 
 
 import africa.semicolon.ecommerce.dto.UserDto;
+import lombok.Getter;
 
+@Getter
 public class SignUpResponse extends Response {
     private final UserDto userDto;
     public SignUpResponse(String message, UserDto userDto){

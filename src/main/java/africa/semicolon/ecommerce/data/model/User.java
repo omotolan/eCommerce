@@ -30,6 +30,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+    private LocalDate dateOfBirth;
     @OneToOne(cascade = CascadeType.ALL)
     private Cart cart;
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -37,7 +38,7 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateJoined;
     @OneToOne(cascade = CascadeType.ALL)
-    private Address addresses;
+    private Address address;
     private Boolean isVerified;
     private String phoneNumber;
 //    @OneToMany

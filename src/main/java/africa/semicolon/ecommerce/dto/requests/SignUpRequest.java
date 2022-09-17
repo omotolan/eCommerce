@@ -1,5 +1,6 @@
 package africa.semicolon.ecommerce.dto.requests;
 
+import africa.semicolon.ecommerce.data.model.Address;
 import africa.semicolon.ecommerce.data.model.Role;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
@@ -9,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -30,6 +32,7 @@ public class SignUpRequest {
     private String password;
     @Size(min = 11, max = 11)
     private String phoneNumber;
-    private int age;
+    private Address address;
+    private String dateOfBirth;
     private Set<Role> roles;
 }
