@@ -17,7 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
 
     public boolean verifyTransaction(String link) {
-        // Calls the payment endpoint to verify is payment way successful
+        // Calls the payment endpoint to verify if payment was successful
         return true;
     }
 

@@ -4,14 +4,13 @@ import africa.semicolon.ecommerce.data.model.Address;
 import africa.semicolon.ecommerce.data.model.Role;
 import africa.semicolon.ecommerce.dto.requests.SignUpRequest;
 import africa.semicolon.ecommerce.dto.responses.SignUpResponse;
+import africa.semicolon.ecommerce.exceptions.TokenException;
 import africa.semicolon.ecommerce.exceptions.UserAlreadyExistException;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,11 +45,14 @@ class UserAuthServiceImplTest {
                 .dateOfBirth("2022-09-14")
                 .roles(roles)
                 .build();
-       SignUpResponse signUpResponse = userAuthService.signUp(signUpRequest);
-       assertEquals("tolani", signUpResponse.getUserDto().getFirstName());
+        SignUpResponse signUpResponse = userAuthService.signUp(signUpRequest);
+        assertEquals("tolani", signUpResponse.getUserDto().getFirstName());
     }
 
     @Test
-    void confirmToken() {
+    void confirmToken() throws TokenException {
+        String tokenGottenFromSignup = "ewwjdlsd";
+        String response = userAuthService.confirmToken(tokenGottenFromSignup);
+        assertEquals("confirmed", response);
     }
 }

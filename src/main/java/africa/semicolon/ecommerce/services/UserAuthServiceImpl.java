@@ -75,7 +75,7 @@ public class UserAuthServiceImpl implements UserAuthService, UserDetailsService 
 
         MessageRequest messageRequest = new MessageRequest();
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + generatedToken;
-        messageRequest.setSender("ehizman.tutoredafrica@gmail.com");
+        messageRequest.setSender("akinsolakolawole@gmail.com");
         messageRequest.setFirstName(registeredUser.getFirstName());
         messageRequest.setReceiver(registeredUser.getEmail());
         messageRequest.setBody("Kindly verify your account. " + link);

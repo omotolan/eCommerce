@@ -86,9 +86,13 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = findCartByTheId(cartId);
 
+        cart.getItems().values().stream().map(item -> {
+            cart.removeItem(item.getProduct().getId());
+            return cart;
+        });
+
         for (Item item : cart.getItems().values()) {
             cart.removeItem(item.getProduct().getId());
-
         }
         cartRepository.save(cart);
         return new Response("cart cleared");

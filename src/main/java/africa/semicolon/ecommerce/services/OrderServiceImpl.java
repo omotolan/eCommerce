@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -86,11 +87,10 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) {
             throw new OrderDoesNotExistException("No Order");
         }
-        List<OrderDTO> orderDTOList = new ArrayList<>();
-        for (OrderEntity eachOrder : order) {
-            orderDTOList.add(OrderDTO.packDto(eachOrder));
-        }
-        return orderDTOList;
+
+        return order.stream()
+                .map(OrderDTO::packDto)
+                .collect(Collectors.toList());
     }
 
 

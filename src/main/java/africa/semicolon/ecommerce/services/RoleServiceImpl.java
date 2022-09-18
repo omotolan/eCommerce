@@ -22,12 +22,13 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.save(role);
         return "Role created";
     }
+
     @Override
-    public Optional<Role> getRoleById(Long id){
-       return roleRepository.findById(id);
+    public Optional<Role> getRoleById(Long id) {
+        return roleRepository.findById(id);
     }
 
-//    @Override
+    //    @Override
 //    public Role getRoleByName(String name) throws RoleException {
 //        Optional<Role> optionalRole = roleRepository.findByName(name);
 //        if (optionalRole.isEmpty()) {
@@ -35,6 +36,10 @@ public class RoleServiceImpl implements RoleService {
 //        }
 //        return optionalRole.get();
 //    }
+    @Override
+    public int getRoles() {
+        return roleRepository.findAll().size();
+    }
 
     @Override
     public List<Role> getAllRole() {

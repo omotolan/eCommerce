@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,11 +32,10 @@ public class ProductServiceImpl implements ProductService {
 
 
     private List<ProductCategory> getCategories(List<String> categoryNames) {
-        List<ProductCategory> productCategories = new ArrayList<>();
-        for (String name : categoryNames) {
-            productCategories.add(productCategoryService.findCategoryByName(name));
-        }
-        return productCategories;
+
+        return categoryNames.stream()
+                .map(productCategoryService::findCategoryByName)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -110,10 +110,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException {
 
-        List<ProductDto> productDtoList = new ArrayList<>();
-        for (Product product : products) {
-            productDtoList.add(ProductDto.packDto(product));
-        }
+        List<ProductDto> productDtoList = products.stream()
+                .map(ProductDto::packDto)
+                .collect(Collectors.toList());
+
         System.out.println("this is the size: " + productDtoList.size());
         long total = (long) productDtoList.size();
         Page<ProductDto> page = new PageImpl<>(productDtoList, pageable, total);
@@ -140,8 +140,6 @@ public class ProductServiceImpl implements ProductService {
         List<Product> products = productRepository.findByProductCategoryId(productCategoryId);
         return returnProductInPages(products, pageable);
     }
-
-
 
 
 }

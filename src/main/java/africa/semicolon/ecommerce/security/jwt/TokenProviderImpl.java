@@ -78,15 +78,6 @@ public class TokenProviderImpl implements TokenProvider {
         return jwts;
     }
 
-    @Override
-    public String generateTokenForVerification(String id) {
-        return Jwts.builder()
-                .setSubject(id)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (long) (24 * 10 * 3600)))
-                .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
-                .compact();
-    }
 
     @Override
     public Boolean validateJWTToken(String token, UserDetails userDetails) {

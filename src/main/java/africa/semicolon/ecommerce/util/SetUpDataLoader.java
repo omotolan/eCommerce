@@ -30,7 +30,9 @@ public class SetUpDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         // TODO: A new role does not get created every time app is ran
-        roleService.createRole(RoleType.SUPER_ADMIN);
+        if (roleService.getRoles() <0) {
+            roleService.createRole(RoleType.SUPER_ADMIN);
+        }
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.getRoleById(1L).get());
 

@@ -11,6 +11,5 @@ public interface ProductCategoryService {
     Response addCategory(AddCategoryRequest addCategoryRequest) throws ProductCategoryException;
 
     List<ProductCategory> getAllCategories();
-//    Map<String, Object> getAllProductByCategory(Long id, Pageable pageable) throws ProductNotFoundException;
     ProductCategory findCategoryByName(String name);
 }
