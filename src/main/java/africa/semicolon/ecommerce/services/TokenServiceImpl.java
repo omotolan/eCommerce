@@ -3,11 +3,9 @@ package africa.semicolon.ecommerce.services;
 import africa.semicolon.ecommerce.data.model.ConfirmationToken;
 import africa.semicolon.ecommerce.data.repositories.ConfirmationTokenRepository;
 import africa.semicolon.ecommerce.exceptions.TokenException;
-import africa.semicolon.ecommerce.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,10 +41,14 @@ public class TokenServiceImpl implements TokenService {
         return confirmationToken;
 
     }
+
     @Override
-    public void deleteExpiredToken() {
-        List<ConfirmationToken> confirmationTokenList = confirmationTokenRepository.findAll().stream().filter(x ->
-                x.getExpiresAt().isBefore(LocalDateTime.now())).toList();
+    public void deleteUsedToken() {
+
+        List<ConfirmationToken> confirmationTokenList = confirmationTokenRepository.findAll().stream()
+                .filter(eachFoundToken ->
+                        eachFoundToken.getUser().getIsVerified()).toList();
         confirmationTokenRepository.deleteAll(confirmationTokenList);
+
     }
 }

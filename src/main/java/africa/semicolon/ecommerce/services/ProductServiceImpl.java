@@ -108,7 +108,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) throws ProductNotFoundException {
+    public Map<String, Object> returnProductInPages(List<Product> products, Pageable pageable) {
 
         List<ProductDto> productDtoList = products.stream()
                 .map(ProductDto::packDto)
@@ -136,7 +136,8 @@ public class ProductServiceImpl implements ProductService {
         return pageResult;
     }
 
-    public Map<String, Object> findProductsInACategory(Long productCategoryId, Pageable pageable) throws ProductNotFoundException {
+    @Override
+    public Map<String, Object> findProductsInACategory(Long productCategoryId, Pageable pageable) {
         List<Product> products = productRepository.findByProductCategoryId(productCategoryId);
         return returnProductInPages(products, pageable);
     }

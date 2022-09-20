@@ -19,7 +19,7 @@ public class DeleteExpiredTokenScheduler {
     @Async
     @Scheduled(cron = "0 0 */23 * * *") //sec,min,hour,day, month day_of_the_week
     public void scheduledDelete() {
-        tokenService.deleteExpiredToken();
+        tokenService.deleteUsedToken();
         log.info("expired token(s) cleared");
 
     }

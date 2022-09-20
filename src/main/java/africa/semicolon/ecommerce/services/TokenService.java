@@ -10,5 +10,5 @@ public interface TokenService {
 
     ConfirmationToken findById(Long id) throws TokenException;
 
-    void deleteExpiredToken();
+    void deleteUsedToken();
 }

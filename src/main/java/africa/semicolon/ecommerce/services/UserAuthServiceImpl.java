@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Optional;
@@ -66,15 +65,13 @@ public class UserAuthServiceImpl implements UserAuthService, UserDetailsService 
         ConfirmationToken confirmationToken = new ConfirmationToken();
         confirmationToken.setToken(generatedToken);
         confirmationToken.setUser(registeredUser);
-        confirmationToken.setCreatedAt(LocalDateTime.now());
-        confirmationToken.setExpiresAt(LocalDateTime.now().plusMinutes(15));
         tokenService.saveConfirmationToken(confirmationToken);
 
         log.info("token generate and saved");
 
 
         MessageRequest messageRequest = new MessageRequest();
-        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + generatedToken;
+        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + confirmationToken.getToken();
         messageRequest.setSender("akinsolakolawole@gmail.com");
         messageRequest.setFirstName(registeredUser.getFirstName());
         messageRequest.setReceiver(registeredUser.getEmail());
@@ -104,20 +101,6 @@ public class UserAuthServiceImpl implements UserAuthService, UserDetailsService 
         ConfirmationToken confirmationToken = tokenService
                 .getToken(token);
 
-        log.info("this is the token : " + confirmationToken.getToken());
-
-
-        if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
-        }
-
-        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
-
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
-        }
-        confirmationToken.setConfirmedAt(LocalDateTime.now());
-        tokenService.saveConfirmationToken(confirmationToken);
         User user = confirmationToken.getUser();
         user.setIsVerified(Boolean.TRUE);
 

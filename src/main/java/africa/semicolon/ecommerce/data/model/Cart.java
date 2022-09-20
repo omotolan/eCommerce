@@ -43,6 +43,9 @@ public class Cart {
 
     public void calculateTotal() {
         BigDecimal total = BigDecimal.ZERO;
+
+//        total = (BigDecimal) items.values().stream()
+//                .map(item -> item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity())));
         for (Item item : items.values()) {
             total = item.getProduct().getPrice().multiply(new BigDecimal(item.getQuantity()));
         }
